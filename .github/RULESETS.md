@@ -15,7 +15,7 @@ This guide shows how to protect branches using **GitHub Rulesets** - the modern,
 **Rulesets vs Branch Protection Rules:**
 
 | Feature | Rulesets | Branch Protection |
-|---------|----------|-------------------|
+| --------- | ---------- | ------------------- |
 | File-based config | ✅ Yes | ❌ No (UI/API only) |
 | Multiple branches | ✅ Yes (patterns) | ⚠️ Limited |
 | Version control | ✅ Yes | ❌ No |
@@ -59,6 +59,7 @@ You want to protect your `main` branch from accidental direct pushes and ensure 
 ```
 
 This file is:
+
 - ✅ **Version controlled** - Track changes in git history
 - ✅ **Portable** - Copy to other projects easily
 - ✅ **Reviewable** - Changes go through PRs like any code
@@ -83,6 +84,7 @@ This script sends your JSON configuration to GitHub's API, which then **enforces
 Once applied, GitHub automatically enforces all rules:
 
 **Without Rulesets** (Before):
+
 ```bash
 git checkout main
 git commit -m "quick fix"
@@ -90,6 +92,7 @@ git push origin main  # ✅ Works - no protection
 ```
 
 **With Rulesets** (After):
+
 ```bash
 git checkout main
 git commit -m "quick fix"
@@ -100,6 +103,7 @@ git push origin main  # ❌ BLOCKED by GitHub!
 ```
 
 **Correct Workflow**:
+
 ```bash
 # Must create a feature branch
 git checkout -b fix/quick-fix
@@ -339,6 +343,7 @@ Add bypass actors to allow admins to override:
 ```
 
 **After modifying the JSON file**, you need to re-apply the ruleset:
+
 - **Via GitHub UI**: Delete the old ruleset and import the updated JSON file
 - **Via CLI script** (optional): Re-run `./.github/setup-rulesets.sh` after deleting the old ruleset
 

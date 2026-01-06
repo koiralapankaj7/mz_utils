@@ -28,16 +28,19 @@ The Dependency Review workflow requires the **Dependency graph** feature to be e
 ## What This Does
 
 ### Dependency Graph
+
 - Tracks all dependencies in your `pubspec.yaml`
 - Shows dependency tree visualization
 - Enables dependency review on PRs
 
 ### Dependabot Alerts
+
 - Scans for known vulnerabilities in dependencies
 - Sends alerts when vulnerable packages are detected
 - Provides remediation advice
 
 ### Dependabot Security Updates
+
 - Automatically creates PRs to update vulnerable dependencies
 - Includes changelogs and release notes
 - Helps keep your package secure with minimal effort
@@ -47,6 +50,7 @@ The Dependency Review workflow requires the **Dependency graph** feature to be e
 ## Why It's Safe
 
 These features:
+
 - ✅ **Read-only** - Only analyze your code, never modify it
 - ✅ **Privacy-friendly** - Data stays within GitHub
 - ✅ **Industry standard** - Used by millions of repositories
@@ -57,6 +61,7 @@ These features:
 ## After Enabling
 
 Once enabled, the CI workflow's **Dependency Review** job will:
+
 - ✅ Check for new vulnerabilities in PR dependency changes
 - ✅ Block PRs that introduce known security issues
 - ✅ Show dependency diff in PR (what packages changed)
