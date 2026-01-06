@@ -183,19 +183,41 @@ git push origin feat/add-new-utility
 
 ---
 
-## Automated Setup (Recommended)
+## How to Apply the Ruleset
 
-Run the setup script using GitHub CLI:
+GitHub provides **two ways** to apply the ruleset configuration from `.github/rulesets/main-protection.json`:
+
+### Option 1: Import via GitHub UI (Recommended)
+
+This is the **official GitHub approach**:
+
+1. **Go to Repository Rulesets**
+
+   Visit: <https://github.com/koiralapankaj7/mz_utils/settings/rules>
+
+2. **Click "New ruleset" → "Import a ruleset"**
+
+3. **Upload the JSON file**
+   - Select `.github/rulesets/main-protection.json` from your local repo
+   - Or copy/paste the JSON content directly
+
+4. **Click "Create"**
+
+That's it! GitHub will enforce the ruleset immediately.
+
+### Option 2: Automated Setup via CLI (Optional Helper)
+
+For convenience, we provide a script to automate the setup using GitHub CLI:
 
 ```bash
-# Make sure GitHub CLI is installed and authenticated
+# Prerequisites: gh CLI installed and authenticated with your personal account
 gh auth login
 
-# Run the setup script
-.github/setup-rulesets.sh
+# Run the automation script
+./.github/setup-rulesets.sh
 ```
 
-That's it! The script will create the ruleset from `.github/rulesets/main-protection.json`.
+**Note**: This is an **optional automation helper**, not required by GitHub. The script does the same thing as Option 1 but via the API instead of the UI.
 
 ---
 
@@ -228,9 +250,9 @@ The ruleset in `.github/rulesets/main-protection.json` protects the `main` branc
 
 ---
 
-## Manual Setup via GitHub UI
+## Alternative: Manual Setup via GitHub UI
 
-If you prefer to use the GitHub web interface:
+If you prefer to configure the ruleset from scratch instead of importing the JSON file:
 
 1. **Go to Repository Rulesets**
 
@@ -316,7 +338,9 @@ Add bypass actors to allow admins to override:
 }
 ```
 
-After modifying, re-run the setup script or update via GitHub UI.
+**After modifying the JSON file**, you need to re-apply the ruleset:
+- **Via GitHub UI**: Delete the old ruleset and import the updated JSON file
+- **Via CLI script** (optional): Re-run `./.github/setup-rulesets.sh` after deleting the old ruleset
 
 ---
 

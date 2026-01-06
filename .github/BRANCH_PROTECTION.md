@@ -1,6 +1,9 @@
-# Branch Protection Setup
+# Branch Protection Setup (Legacy)
 
-This guide shows how to protect the `main` branch from direct pushes and require Pull Requests.
+> **⚠️ NOTICE**: This guide covers the **legacy branch protection API**.
+> **For new projects, use [GitHub Rulesets](.github/RULESETS.md) instead** - they're file-based, version controlled, and GitHub's recommended approach.
+
+This guide shows how to protect the `main` branch from direct pushes and require Pull Requests using the legacy branch protection API.
 
 ## Automated Setup (Recommended)
 

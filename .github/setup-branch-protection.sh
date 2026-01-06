@@ -1,11 +1,16 @@
 #!/bin/bash
 
-# Branch Protection Setup Script
-# This script uses GitHub CLI to configure branch protection rules
+# Branch Protection Setup Script (LEGACY - USE RULESETS INSTEAD)
+#
+# ⚠️  IMPORTANT: This script uses the LEGACY branch protection API.
+# ⚠️  For new projects, use GitHub Rulesets instead (.github/setup-rulesets.sh)
+#
+# This is an OPTIONAL script that automates branch protection via GitHub CLI.
+# GitHub Rulesets are the modern, recommended approach for branch protection.
 #
 # Prerequisites:
 #   - GitHub CLI installed: https://cli.github.com/
-#   - Authenticated: gh auth login
+#   - Authenticated: gh auth login (with your personal account, not work)
 #
 # Usage:
 #   chmod +x .github/setup-branch-protection.sh

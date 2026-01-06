@@ -1,11 +1,18 @@
 #!/bin/bash
 
-# GitHub Rulesets Setup Script
-# This script uses GitHub CLI to configure repository rulesets
+# GitHub Rulesets Setup Script (OPTIONAL AUTOMATION HELPER)
+#
+# This is an OPTIONAL script that automates ruleset setup via GitHub CLI.
+# You can also import the ruleset manually via GitHub UI:
+#   1. Go to https://github.com/koiralapankaj7/mz_utils/settings/rules
+#   2. Click "New ruleset" → "Import a ruleset"
+#   3. Upload .github/rulesets/main-protection.json
+#
+# This script does the same thing but via the API instead of the UI.
 #
 # Prerequisites:
 #   - GitHub CLI installed: https://cli.github.com/
-#   - Authenticated: gh auth login
+#   - Authenticated: gh auth login (with your personal account, not work)
 #
 # Usage:
 #   chmod +x .github/setup-rulesets.sh
