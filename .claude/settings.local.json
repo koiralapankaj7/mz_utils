@@ -27,7 +27,11 @@
       "Bash(git checkout:*)",
       "Bash(sort:*)",
       "Skill(flutter-dart-docs)",
-      "Bash(flutter pub get:*)"
+      "Bash(flutter pub get:*)",
+      "Bash(tree:*)",
+      "Bash(ssh:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

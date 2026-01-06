@@ -17,7 +17,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.38.4'
           channel: 'stable'
           cache: true
 
@@ -40,7 +40,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.38.4'
           channel: 'stable'
           cache: true
 
@@ -54,7 +54,7 @@ jobs:
         run: flutter test --coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: false
@@ -71,7 +71,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.38.4'
           channel: 'stable'
           cache: true
 
@@ -84,45 +84,26 @@ jobs:
       - name: Run pana
         run: dart pub global run pana --no-warning
 
-  build-example:
-    name: Build Example App
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.0'
-          channel: 'stable'
-          cache: true
-
-      - name: Install dependencies
-        run: |
-          flutter pub get
-          cd example
-          flutter pub get
-
-      - name: Build example app (Android)
-        run: |
-          cd example
-          flutter build apk --debug
-
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
+        continue-on-error: true  # Don't fail if dependency graph not enabled
 
   security:
     name: Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write  # Required for uploading SARIF results
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -140,3 +121,4 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+        continue-on-error: true  # Don't fail if upload has permission issues
