@@ -1,21 +1,11 @@
 name: example
-description: "A new Flutter project."
+description: A minimal example for mz_lints plugin setup.
 publish_to: "none"
 version: 0.1.0
 
 environment:
   sdk: ^3.10.0
 
-dependencies:
-  flutter:
-    sdk: flutter
-
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
   mz_lints:
     path: ../
-
-flutter:
-  uses-material-design: true

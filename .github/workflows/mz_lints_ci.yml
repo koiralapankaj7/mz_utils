@@ -30,11 +30,7 @@ jobs:
           sdk: '3.10.0'
 
       - name: Install dependencies
-        run: |
-          # Temporarily hide example folder (Flutter project) to avoid resolution issues
-          mv example example_backup
-          dart pub get
-          mv example_backup example
+        run: dart pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
@@ -55,11 +51,7 @@ jobs:
           sdk: '3.10.0'
 
       - name: Install dependencies
-        run: |
-          # Temporarily hide example folder (Flutter project) to avoid resolution issues
-          mv example example_backup
-          dart pub get
-          mv example_backup example
+        run: dart pub get
 
       - name: Run tests
         run: dart test
@@ -97,11 +89,7 @@ jobs:
           sdk: '3.10.0'
 
       - name: Install dependencies
-        run: |
-          # Temporarily hide example folder (Flutter project) to avoid resolution issues
-          mv example example_backup
-          dart pub get
-          mv example_backup example
+        run: dart pub get
 
       - name: Install pana
         run: dart pub global activate pana

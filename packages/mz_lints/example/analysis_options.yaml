@@ -1,5 +1,7 @@
-include: package:flutter_lints/flutter.yaml
-
 plugins:
   mz_lints:
     path: ../
+
+linter:
+  rules:
+    - avoid_print

@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mz_utils/mz_utils.dart';
 
 /// Example file with intentional lint violations for testing mz_lints.
 ///
 /// Open this file in your IDE to see the lints in action.
 /// Each section demonstrates a specific rule violation.
-
-// =============================================================================
-// RULE: avoid_print_calls
-// =============================================================================
-
-/// This function has print calls that should trigger lints.
-void examplePrintCalls() {
-  print('This should trigger avoid_print_calls lint'); // LINT
-  print('Another print call'); // LINT
-}
 
 // =============================================================================
 // RULE: dispose_notifier
@@ -155,12 +146,9 @@ class _MultipleViolationsExampleState extends State<MultipleViolationsExample> {
   void initState() {
     super.initState();
     widget.notifier.addListener(_onNotify); // LINT: not removed
-    print('Widget initialized'); // LINT: avoid print
   }
 
-  void _onNotify() {
-    print('Notified!'); // LINT: avoid print
-  }
+  void _onNotify() {}
 
   @override
   Widget build(BuildContext context) {
@@ -172,14 +160,13 @@ class _MultipleViolationsExampleState extends State<MultipleViolationsExample> {
 // RULE: controller_listen_in_callback
 // =============================================================================
 
-/// Example Controller class (simulating mz_utils Controller).
-class Controller {
-  static T ofType<T>(BuildContext context, {bool listen = true}) {
-    throw UnimplementedError();
-  }
+/// Example Controller for demonstrating controller_listen_in_callback rule.
+class ExampleController extends Controller {
+  int count = 0;
 
-  static T? maybeOfType<T>(BuildContext context, {bool listen = true}) {
-    return null;
+  void increment() {
+    count++;
+    notifyListeners();
   }
 }
 
@@ -189,14 +176,14 @@ class BadControllerListenExample extends StatelessWidget {
 
   // BAD: void method = callback, should use listen: false
   void _onButtonPressed(BuildContext context) {
-    final ctrl = Controller.ofType<Controller>(context); // LINT
-    print(ctrl);
+    final ctrl = Controller.ofType<ExampleController>(context); // LINT
+    ctrl.increment();
   }
 
   // BAD: void method = callback, should use listen: false
   void handleSubmit(BuildContext context) {
-    final ctrl = Controller.maybeOfType<Controller>(context); // LINT
-    print(ctrl);
+    final ctrl = Controller.maybeOfType<ExampleController>(context); // LINT
+    ctrl?.increment();
   }
 
   @override
@@ -206,8 +193,8 @@ class BadControllerListenExample extends StatelessWidget {
         // BAD: Lambda callback, should use listen: false
         ElevatedButton(
           onPressed: () {
-            final ctrl = Controller.ofType<Controller>(context); // LINT
-            print(ctrl);
+            final ctrl = Controller.ofType<ExampleController>(context); // LINT
+            ctrl.increment();
           },
           child: const Text('Submit'),
         ),
@@ -215,7 +202,7 @@ class BadControllerListenExample extends StatelessWidget {
         // BAD: onTap callback, should use listen: false
         GestureDetector(
           onTap: () {
-            Controller.maybeOfType<Controller>(context); // LINT1
+            Controller.maybeOfType<ExampleController>(context); // LINT
           },
           child: const Text('Tap me'),
         ),
@@ -223,7 +210,7 @@ class BadControllerListenExample extends StatelessWidget {
         // BAD: onChanged callback, should use listen: false
         TextField(
           onChanged: (value) {
-            Controller.ofType<Controller>(context); // LINT
+            Controller.ofType<ExampleController>(context); // LINT
           },
         ),
       ],
@@ -237,36 +224,39 @@ class GoodControllerListenExample extends StatelessWidget {
 
   // GOOD: Using listen: false in callback
   void _onButtonPressed(BuildContext context) {
-    final ctrl = Controller.ofType<Controller>(context, listen: false); // OK
-    print(ctrl);
+    final ctrl = Controller.ofType<ExampleController>(
+      context,
+      listen: false,
+    ); // OK
+    ctrl.increment();
   }
 
   // GOOD: Using listen: false in callback
   void handleSubmit(BuildContext context) {
-    final ctrl = Controller.maybeOfType<Controller>(
+    final ctrl = Controller.maybeOfType<ExampleController>(
       context,
       listen: false,
     ); // OK
-    print(ctrl);
+    ctrl?.increment();
   }
 
   @override
   Widget build(BuildContext context) {
     // GOOD: In build method (returns Widget), listen: true is correct
-    final controller = Controller.ofType<Controller>(context); // OK
+    final controller = Controller.ofType<ExampleController>(context); // OK
 
     return Column(
       children: [
-        Text('Controller: $controller'),
+        Text('Controller: ${controller.count}'),
 
         // GOOD: Using listen: false in onPressed callback
         ElevatedButton(
           onPressed: () {
-            final ctrl = Controller.ofType<Controller>(
+            final ctrl = Controller.ofType<ExampleController>(
               context,
               listen: false,
             ); // OK
-            print(ctrl);
+            ctrl.increment();
           },
           child: const Text('Submit'),
         ),
@@ -274,7 +264,10 @@ class GoodControllerListenExample extends StatelessWidget {
         // GOOD: Using listen: false in onTap callback
         GestureDetector(
           onTap: () {
-            Controller.maybeOfType<Controller>(context, listen: false); // OK
+            Controller.maybeOfType<ExampleController>(
+              context,
+              listen: false,
+            ); // OK
           },
           child: const Text('Tap me'),
         ),
@@ -282,7 +275,7 @@ class GoodControllerListenExample extends StatelessWidget {
         // GOOD: Using listen: false in onChanged callback
         TextField(
           onChanged: (value) {
-            Controller.ofType<Controller>(context, listen: false); // OK
+            Controller.ofType<ExampleController>(context, listen: false); // OK
           },
         ),
       ],
