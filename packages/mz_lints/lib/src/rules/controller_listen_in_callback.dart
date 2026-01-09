@@ -5,6 +5,8 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+import 'package:mz_lints/src/utils/ignore_info.dart';
+
 /// A lint rule that warns when `Controller.ofType` or `Controller.maybeOfType`
 /// is called from a callback without setting `listen: false`.
 ///
@@ -40,7 +42,7 @@ class ControllerListenInCallback extends AnalysisRule {
     "Use 'listen: false' when accessing Controller from a callback.",
     correctionMessage:
         "Add 'listen: false' to avoid unnecessary widget rebuilds.",
-    severity: .WARNING,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   /// Creates a new instance of [ControllerListenInCallback].
@@ -86,6 +88,14 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     // Check if we're inside a non-Widget-returning function (i.e., a callback)
     if (!_isInsideCallback(node)) return;
+
+    // Check ignore comments before reporting
+    final unit = node.root as CompilationUnit;
+    final ignoreInfo = IgnoreInfo.fromUnit(unit);
+    final ruleName = ControllerListenInCallback.code.name;
+
+    if (ignoreInfo.isIgnoredForFile(ruleName)) return;
+    if (ignoreInfo.isIgnoredAtNode(ruleName, node.methodName, unit)) return;
 
     // Report the lint
     rule.reportAtNode(node.methodName);

@@ -290,4 +290,52 @@ void _onPressed(Object context) {
 }
 ''');
   }
+
+  Future<void> test_ignore_for_file_suppresses_lint() async {
+    await assertNoDiagnostics(r'''
+// ignore_for_file: controller_listen_in_callback
+class Controller {
+  static T ofType<T>(Object context, {bool listen = true}) => throw '';
+}
+
+class MyWidget {
+  void _onButtonPressed(Object context) {
+    final ctrl = Controller.ofType<Controller>(context);
+  }
+}
+''');
+  }
+
+  Future<void> test_ignore_line_suppresses_lint() async {
+    await assertNoDiagnostics(r'''
+class Controller {
+  static T ofType<T>(Object context, {bool listen = true}) => throw '';
+}
+
+class MyWidget {
+  void _onButtonPressed(Object context) {
+    // ignore: controller_listen_in_callback
+    final ctrl = Controller.ofType<Controller>(context);
+  }
+}
+''');
+  }
+
+  Future<void> test_ignore_different_rule_does_not_suppress() async {
+    await assertDiagnostics(
+      r'''
+// ignore_for_file: dispose_notifier
+class Controller {
+  static T ofType<T>(Object context, {bool listen = true}) => throw '';
+}
+
+class MyWidget {
+  void _onButtonPressed(Object context) {
+    final ctrl = Controller.ofType<Controller>(context);
+  }
+}
+''',
+      [lint(218, 6)],
+    );
+  }
 }

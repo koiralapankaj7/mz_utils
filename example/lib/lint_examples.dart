@@ -1,3 +1,6 @@
+// ignore_for_file: unused_field, unused_element
+// ignore_for_file: dispose_notifier, remove_listener, controller_listen_in_callback
+
 import 'package:flutter/material.dart';
 import 'package:mz_utils/mz_utils.dart';
 

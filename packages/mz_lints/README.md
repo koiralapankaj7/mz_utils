@@ -135,6 +135,29 @@ void _onButtonPressed() {
 }
 ```
 
+## Suppressing Rules
+
+You can suppress rules using standard Dart ignore comments:
+
+**Suppress for entire file:**
+
+```dart
+// ignore_for_file: dispose_notifier, remove_listener
+
+class MyWidget extends StatefulWidget {
+  // ...
+}
+```
+
+**Suppress for a single line:**
+
+```dart
+class _MyWidgetState extends State<MyWidget> {
+  // ignore: dispose_notifier
+  final _controller = TextEditingController();
+}
+```
+
 ## Requirements
 
 - Dart SDK 3.10.0 or later

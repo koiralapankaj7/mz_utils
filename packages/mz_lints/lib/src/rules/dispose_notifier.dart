@@ -7,6 +7,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+import 'package:mz_lints/src/utils/ignore_info.dart';
+
 /// A lint rule that ensures ChangeNotifier subclasses created in StatefulWidget
 /// State classes are properly disposed when they are actually used.
 ///
@@ -69,7 +71,7 @@ class DisposeNotifier extends AnalysisRule {
     'dispose_notifier',
     "ChangeNotifier '{0}' is created but never disposed.",
     correctionMessage: "Call '{0}.dispose()' in the State's dispose() method.",
-    severity: .WARNING,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   /// Creates a new instance of [DisposeNotifier].
@@ -104,6 +106,14 @@ class _Visitor extends SimpleAstVisitor<void> {
     // Check if this class extends State<T>
     if (!_isStateClass(node)) return;
 
+    // Get the compilation unit and ignore info
+    final unit = node.root as CompilationUnit;
+    final ignoreInfo = IgnoreInfo.fromUnit(unit);
+    final ruleName = DisposeNotifier.code.name;
+
+    // Check if this rule is ignored for the entire file
+    if (ignoreInfo.isIgnoredForFile(ruleName)) return;
+
     // Find all notifier fields created in this class
     final notifierFields = <FieldDeclaration, List<VariableDeclaration>>{};
 
@@ -135,7 +145,10 @@ class _Visitor extends SimpleAstVisitor<void> {
         final name = variable.name.lexeme;
         // Only warn if the notifier is actually used somewhere
         if (referencedNames.contains(name) && !disposedNames.contains(name)) {
-          rule.reportAtNode(variable, arguments: [name]);
+          // Check if this specific line is ignored
+          if (!ignoreInfo.isIgnoredAtNode(ruleName, variable, unit)) {
+            rule.reportAtNode(variable, arguments: [name]);
+          }
         }
       }
     }

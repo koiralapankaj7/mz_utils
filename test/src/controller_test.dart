@@ -109,22 +109,34 @@ void main() {
       });
 
       test('should provide O(1) removal for simple listeners', () {
-        final controller = TestController();
-        final listeners = List.generate(1000, (i) => () {});
+        // Test O(1) by comparing removal times at different scales
+        // If O(1), 10x more listeners should take ~10x time, not 100x
+        int measureRemovalTime(int count) {
+          final controller = TestController();
+          final listeners = List.generate(count, (i) => () {});
+          // ignore: cascade_invocations, forEach needed for benchmark
+          listeners.forEach(controller.addListener);
 
-        // Add 1000 simple listeners
-        // ignore: cascade_invocations
-        listeners.forEach(controller.addListener);
+          final stopwatch = Stopwatch()..start();
+          listeners.forEach(controller.removeListener);
+          stopwatch.stop();
 
-        // Remove all listeners - should be fast O(1) per removal
-        final stopwatch = Stopwatch()..start();
-        listeners.forEach(controller.removeListener);
-        stopwatch.stop();
+          controller.dispose();
+          return stopwatch.elapsedMicroseconds;
+        }
 
-        // O(1) removal should be very fast (< 5ms for 1000 removals)
-        expect(stopwatch.elapsedMilliseconds, lessThan(5));
+        // Warm up JIT
+        measureRemovalTime(100);
 
-        controller.dispose();
+        // Measure at two scales
+        final time100 = measureRemovalTime(100);
+        final time1000 = measureRemovalTime(1000);
+
+        // With O(1) removal, 10x listeners should be roughly 10x slower
+        // With O(n) removal, it would be ~100x slower
+        // Allow ratio up to 30x to account for variance (still catches O(n))
+        final ratio = time1000 / (time100 == 0 ? 1 : time100);
+        expect(ratio, lessThan(30));
       });
 
       test('should handle Set operations correctly', () {

@@ -6,6 +6,8 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
+import 'package:mz_lints/src/utils/ignore_info.dart';
+
 /// Extracts the target name from an expression for listener matching.
 ///
 /// Returns the string representation of the target, handling:
@@ -74,7 +76,7 @@ class RemoveListener extends AnalysisRule {
     correctionMessage:
         "Call 'removeListener({0})' in the dispose() method to prevent memory "
         'leaks.',
-    severity: .WARNING,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   /// Creates a new instance of [RemoveListener].
@@ -109,6 +111,14 @@ class _Visitor extends SimpleAstVisitor<void> {
     // Check if this class extends State<T>
     if (!_isStateClass(node)) return;
 
+    // Get the compilation unit and ignore info
+    final unit = node.root as CompilationUnit;
+    final ignoreInfo = IgnoreInfo.fromUnit(unit);
+    final ruleName = RemoveListener.code.name;
+
+    // Check if this rule is ignored for the entire file
+    if (ignoreInfo.isIgnoredForFile(ruleName)) return;
+
     // Find all addListener calls
     final addedListeners = <_ListenerInfo>[];
     final removedListeners = <_ListenerInfo>[];
@@ -138,7 +148,10 @@ class _Visitor extends SimpleAstVisitor<void> {
       );
 
       if (!isRemoved) {
-        rule.reportAtNode(added.node, arguments: [added.callbackName]);
+        // Check if this specific line is ignored
+        if (!ignoreInfo.isIgnoredAtNode(ruleName, added.node, unit)) {
+          rule.reportAtNode(added.node, arguments: [added.callbackName]);
+        }
       }
     }
   }

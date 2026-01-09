@@ -572,4 +572,70 @@ class _MyWidgetState extends BaseState<MyWidget> {
       [lint(255, 37)],
     );
   }
+
+  Future<void> test_ignore_for_file_suppresses_lint() async {
+    // Tests that ignore_for_file comment suppresses the lint
+    await assertNoDiagnostics(r'''
+// ignore_for_file: dispose_notifier
+import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
+
+class MyWidget extends StatefulWidget {}
+
+class _MyWidgetState extends State<MyWidget> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(Object context) {
+    print(_controller.text);
+    return const SizedBox();
+  }
+}
+''');
+  }
+
+  Future<void> test_ignore_line_suppresses_lint() async {
+    // Tests that line-level ignore comment suppresses the lint
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
+
+class MyWidget extends StatefulWidget {}
+
+class _MyWidgetState extends State<MyWidget> {
+  // ignore: dispose_notifier
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(Object context) {
+    print(_controller.text);
+    return const SizedBox();
+  }
+}
+''');
+  }
+
+  Future<void> test_ignore_different_rule_does_not_suppress() async {
+    // Tests that ignoring a different rule doesn't suppress this lint
+    await assertDiagnostics(
+      r'''
+// ignore_for_file: remove_listener
+import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
+
+class MyWidget extends StatefulWidget {}
+
+class _MyWidgetState extends State<MyWidget> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(Object context) {
+    print(_controller.text);
+    return const SizedBox();
+  }
+}
+''',
+      [lint(215, 37)],
+    );
+  }
 }
