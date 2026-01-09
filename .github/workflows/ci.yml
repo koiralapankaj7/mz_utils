@@ -19,13 +19,14 @@ jobs:
         with:
           flutter-version: '3.38.4'
           channel: 'stable'
+          architecture: x64
           cache: true
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format --output=none --set-exit-if-changed lib test example
 
       - name: Analyze code
         run: dart analyze --fatal-infos
@@ -42,6 +43,7 @@ jobs:
         with:
           flutter-version: '3.38.4'
           channel: 'stable'
+          architecture: x64
           cache: true
 
       - name: Install dependencies
@@ -73,6 +75,7 @@ jobs:
         with:
           flutter-version: '3.38.4'
           channel: 'stable'
+          architecture: x64
           cache: true
 
       - name: Install dependencies
